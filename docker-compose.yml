@@ -1,0 +1,34 @@
+version: '3.9'
+
+services:
+  database:
+    image: mongo:5
+    restart: always
+    volumes:
+      - 504devteam-data:/data/db
+    ports:
+      - 27017:27017
+
+  backend:
+    image: node:14
+    working_dir: /app
+    command: yarn start
+    ports:
+      - 8020:8000
+    volumes:
+      - .:/app
+    environment:
+      PORT: 8000
+      DATABASE_URL: mongodb://database/devteam-dev
+      CORS_WHITELIST: http://localhost:8080
+    depends_on:
+      - database
+
+networks: 
+  default:
+    external:
+      name: 504devteam-network
+
+
+volumes:
+  504devteam-data:
